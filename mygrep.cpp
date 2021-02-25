@@ -2,7 +2,6 @@
 #include <fstream>
 #include <cstring>
 #include <string>
-
 using namespace std;
 
 
@@ -23,11 +22,10 @@ void output(int found_index, string subStr, string bigStr)
 
 void from_file_no_flags(string subStr, string filename)
 {
-	// TODO: only prints word and line number, not whole line.
 	// Read lines from file and print them to console.
 	fstream searchfile;
 	searchfile.open(filename, ios::in);
-
+	
 	int line_number;
 	string file_line;
 
@@ -39,9 +37,11 @@ void from_file_no_flags(string subStr, string filename)
 
 	else
 	{
-		while (searchfile >> file_line)
+		while (!searchfile.eof())
 		{
 			line_number++;
+			getline(searchfile, file_line); 
+
 			if (file_line.find(subStr) != string::npos)
 			{
 				// TODO: incorrect formatting!!!
@@ -67,16 +67,16 @@ int main(int argc, char* argv[])
 	// declaring variables
 	
 
-
-	// needed only without arguments?
 	int found_index;
 	string bigStr, subStr, filename;
-
+	
 	// ask string and substring.
 	// Done only if no arguments are given.
-	// TODO: consider making this it's own function.
 	if (argc == 1)
 	{
+
+		
+
 		cout << "Give a string from which to search for: ";
 		getline(cin, bigStr);
 
@@ -102,6 +102,9 @@ int main(int argc, char* argv[])
 
 	else if (argc == 3 and argv[2] != "")
 	{
+
+		// This will need changes
+		// Make one function to handle all flags?
 		filename = argv[2];
 		subStr = argv[1];
 		from_file_no_flags(subStr, filename);
@@ -119,18 +122,12 @@ int main(int argc, char* argv[])
 		}
 	}
 
-
-	
-
-
-
-
 	return EXIT_SUCCESS;
 	
 
 
 # if 0
-	// These may be needed later.klngh
+	// These may be needed later
 	
 	// Converting strings to C-style const char*
 	const char* bigStr_C = bigStr.c_str();
