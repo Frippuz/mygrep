@@ -4,6 +4,11 @@
 #include <string>
 using namespace std;
 
+// Declaring flags as constants 
+// TODO: Do these need to be global?
+const char* FLAG_OPTIONS_CHAR = "-o";
+const char* FLAG_OCCURRENCES_CHAR = "o";
+const char* FLAG_LINE_NUMBERS_CHAR = "l";
 
 /*
 void output(int found_index, string subStr, string bigStr)
@@ -20,7 +25,7 @@ void output(int found_index, string subStr, string bigStr)
 }
 */
 
-void from_file_no_flags(string subStr, string filename)
+void search_from_file(string subStr, string filename)
 {
 	// Read lines from file and print them to console.
 	fstream searchfile;
@@ -53,7 +58,7 @@ void from_file_no_flags(string subStr, string filename)
 
 int main(int argc, char* argv[])
 {
-// for testing argc and argv remove later
+// TODO: for testing argc and argv remove later
 #if 0
 	
 	cout << argc << " " << argv << endl;
@@ -64,19 +69,17 @@ int main(int argc, char* argv[])
 	}
 #endif
 
-	// declaring variables
-	
-
+	// Declaring variables
 	int found_index;
 	string bigStr, subStr, filename;
+
+	// Declaring option flags boolean values
+	bool flag_options, flag_occurrences, flag_line_numbers;
 	
 	// ask string and substring.
 	// Done only if no arguments are given.
 	if (argc == 1)
 	{
-
-		
-
 		cout << "Give a string from which to search for: ";
 		getline(cin, bigStr);
 
@@ -100,18 +103,20 @@ int main(int argc, char* argv[])
 	}
 
 
+	// TODO: does not currently support flags? fix this first or make another function call.
 	else if (argc == 3 and argv[2] != "")
 	{
 
 		// This will need changes
-		// Make one function to handle all flags?
+		// Make one function to handle all flags?..... YES!
 		filename = argv[2];
 		subStr = argv[1];
-		from_file_no_flags(subStr, filename);
+		search_from_file(subStr, filename);
 	}
 
 	else 
 	{
+		// TODO: give user proper error message!
 		cout << "error" << endl;
 		
 		cout << argc << " " << argv << endl;
@@ -125,7 +130,7 @@ int main(int argc, char* argv[])
 	return EXIT_SUCCESS;
 	
 
-
+// TODO: delete these
 # if 0
 	// These may be needed later
 	
