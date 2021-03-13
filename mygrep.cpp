@@ -1,7 +1,8 @@
 // TODO: proper user guide here
 /* 
 Running the program:
-./mygrep -options searchword filename.txt 
+./mygrep -flags searchword filename.txt 
+flags start with -o
 */
 #include <iostream>
 #include <fstream>
@@ -14,6 +15,8 @@ using namespace std;
 const char* FLAG_OPTIONS_CHAR = "-o";
 const char* FLAG_OCCURRENCES_CHAR = "o";
 const char* FLAG_LINE_NUMBERS_CHAR = "l";
+
+
 
 /*
 void output(int found_index, string subStr, string bigStr)
@@ -30,19 +33,20 @@ void output(int found_index, string subStr, string bigStr)
 }
 */
 
-void search_from_file(string subStr, string filename)
+void search_from_file(string subStr, string filename, bool show_line_numbers, bool show_occurrences)
 {
 	// Read lines from file and print them to console.
 	fstream searchfile;
 	searchfile.open(filename, ios::in);
 	
-	int line_number;
+	// declare variables
+	int line_number = 0, occurrences = 0;
 	string file_line;
 
 	if (!searchfile)
 	{
 		// TODO: check output 
-		cout << "Could not open file." << endl;
+		cout << "error: Could not open file." << endl;
 	}
 
 	else
@@ -54,34 +58,35 @@ void search_from_file(string subStr, string filename)
 
 			if (file_line.find(subStr) != string::npos)
 			{
-				// TODO: incorrect formatting!!!
-				cout << "line " << line_number  << ":  " << file_line << endl;
+				occurrences++;
+				
+				// if show_line_numbers is true also print line line numbers,
+				// if not print only line content.
+				if(show_line_numbers)
+				{
+					cout << line_number << ":" << file_line << endl;
+				}
+				
+				else {cout << file_line << endl;}
 			}
 		}
 	}
+
+	if(show_occurrences)
+	{
+		cout << "\nOccurrences of lines containing \"" << subStr << "\": " << occurrences << endl;
+	}
 }
+
 
 int main(int argc, char* argv[])
 {
-
-
-// TODO: for testing argc and argv remove later
-#if 0
-	
-	cout << argc << " " << argv << endl;
-
-	for(int i = 0 ; i < sizeof(*argv); i++)
-	{
-		cout << "argv[" << i << "]: " << argv[i] << endl;
-	}
-#endif
-
-	// Declaring variables
+	// TODO: consider moving these to their approprriate satements.
 	int found_index;
 	string bigStr, subStr, filename;
 
-	// Declaring option flags boolean values
-	bool flag_options = false;
+	// Declaring option flags as boolean values.
+	//bool flag_options = false; // TODO: flag_options may be unneccessary! 
 	bool flag_show_occurrences = false;
 	bool flag_show_line_numbers = false;
 	
@@ -112,57 +117,69 @@ int main(int argc, char* argv[])
 	}
 
 
-	// TODO: does not currently support flags? fix this first or make another function call.
 
-	// when a file and searchword are given, but no flags.
+	// When a file and searchword are given, but no flags.
 	else if (argc == 3 and argv[2] != "")
 	{
-
-		// This will need changes
-		// Make one function to handle all flags?..... YES!
-		filename = argv[2];
 		subStr = argv[1];
-		search_from_file(subStr, filename);
+		filename = argv[2];
+		search_from_file(subStr, filename,flag_show_line_numbers, flag_show_occurrences);
 	}
 
 
 
 
-	// TODo: make function call when flags are given.
+	// TODO: make function call when flags are given.
+
+	// When flags, searchword and filename are given.
 	else if (argc == 4 and argv[2] != "")
 	{
+		subStr = argv[2];
+		filename = argv[3];
+
+
+
 		// check what flags are given.
 		// couts are for testing
-		if (strstr(argv[1], FLAG_OPTIONS_CHAR)) // TODO: this method works, do this for rest of 
+		
+		// Check that "-o" is first in argv[1].
+		if (strstr(argv[1], FLAG_OPTIONS_CHAR) == argv[1])
 		{	
-			//TODO: remove couts
-			cout << "found at: " << *strstr(argv[1], FLAG_OPTIONS_CHAR) << endl;
-			flag_options = true;
-			cout << "flag options set to true\n";
+
+			// Remove first two elements ("-" and "o" ) from argv[1] 
+			argv[1] = &argv[1][2];
+			
+			//flag_options = true; // this is may not be necessary
+
+
+			if (strstr(argv[1], FLAG_OCCURRENCES_CHAR))
+			{
+				flag_show_occurrences = true;
+			}
+
+
+			if (strstr(argv[1], FLAG_LINE_NUMBERS_CHAR))
+			{
+				flag_show_line_numbers = true;
+			}
+
+			search_from_file(subStr, filename,flag_show_line_numbers, flag_show_occurrences);
 		}
-		if (strstr(argv[1], FLAG_OCCURRENCES_CHAR)) 
+
+		// incorrect flags, give user and error message.
+		else 
 		{
-			cout << "found at: " << *strstr(argv[1], FLAG_OCCURRENCES_CHAR) << endl;
-			// TODO: this will cause a bug, since "o" is already found in "-o"
-			// so this statement will trigger everytime an option is used. fix this!
-			// "o" can not be in  second position of argv[1]
-			flag_show_occurrences = true;
-			cout << "flag show occurences set to true\n";
-		}
-		if (strstr(argv[1], FLAG_LINE_NUMBERS_CHAR))
-		{
-			cout << "found at: " << *strstr(argv[1], FLAG_LINE_NUMBERS_CHAR) << endl;
-			flag_show_line_numbers = true;
-			cout << "flag show line numbers set to true\n";
+			cout << "error: Incorrect options." << endl;
 		}
 	}
-
 
 
 	// If no searchword is given. 
 	else 
 	{
+		
 		// TODO: give user proper error message!
+		
 		cout << "error" << endl;
 		
 		cout << argc << " " << argv << endl;
