@@ -40,6 +40,7 @@ void search_from_file(string sub_string, string filename, bool show_line_numbers
 	// declaring variables
 	int line_number = 0, occurrences = 0, not_occurrences = 0;
 	string file_line, file_line_temp, sub_string_temp = sub_string;
+	bool file_error = false;
 	bool sub_string_found = false;
 
 	// make sub_string_temp lowercase if ignore_case is true.
@@ -52,6 +53,7 @@ void search_from_file(string sub_string, string filename, bool show_line_numbers
 	// Check that file could be read correctly.
 	if (!searchfile)
 	{
+		file_error = true;
 		cout << "An exception occurred." << endl;
 	}
 
@@ -113,12 +115,12 @@ void search_from_file(string sub_string, string filename, bool show_line_numbers
 	searchfile.close();
 
 	// Printed if show_occurrences is true
-	if (show_occurrences and !reverse_search)
+	if (show_occurrences and !reverse_search and !file_error)
 	{
 		cout << "\nOccurrences of lines containing \"" << sub_string << "\": " << occurrences << endl;
 	}
 
-	else if (show_occurrences and reverse_search)
+	else if (show_occurrences and reverse_search and !file_error)
 	{
 		cout << "\nOccurrences of lines NOT containing \"" << sub_string << "\": " << not_occurrences << endl;
 	}
